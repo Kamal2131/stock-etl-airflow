@@ -1,0 +1,14 @@
+# Astro Runtime includes the following pre-installed providers packages: https://www.astronomer.io/docs/astro/runtime-image-architecture#provider-packages
+
+# Data extraction
+kiteconnect>=4.2.0
+
+# Data processing
+pandas>=2.0.0
+pyarrow>=14.0.0
+
+# Analytics & queries
+duckdb>=0.9.0
+
+# Utilities
+python-dotenv>=1.0.0
