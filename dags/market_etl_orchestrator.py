@@ -58,7 +58,6 @@ def market_etl_orchestrator():
         trigger_fno = TriggerDagRunOperator(
             task_id="trigger_fno_etl",
             trigger_dag_id="fno_etl_daily",
-            execution_date="{{ ds }}",
             reset_dag_run=True,
             wait_for_completion=not RUN_PARALLEL,
             poke_interval=60,
@@ -73,7 +72,6 @@ def market_etl_orchestrator():
         trigger_equity = TriggerDagRunOperator(
             task_id="trigger_nifty500_etl",
             trigger_dag_id="nifty500_etl_daily",
-            execution_date="{{ ds }}",
             reset_dag_run=True,
             wait_for_completion=not RUN_PARALLEL,
             poke_interval=60,
