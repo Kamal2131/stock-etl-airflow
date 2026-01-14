@@ -10,5 +10,11 @@ pyarrow>=14.0.0
 # Analytics & queries
 duckdb>=0.9.0
 
+# AWS S3 upload
+boto3>=1.34.0
+
+# Retry logic
+tenacity>=8.2.0
+
 # Utilities
 python-dotenv>=1.0.0

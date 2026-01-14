@@ -57,6 +57,79 @@ class ParquetLoader:
         """Write data to processed layer."""
         return self._write_layer("processed", df, underlying, trade_date, overwrite)
     
+    def write_equity_raw(
+        self,
+        df: pd.DataFrame,
+        trade_date: datetime,
+        overwrite: bool = True
+    ) -> str:
+        """
+        Write equity data to raw layer.
+        
+        Args:
+            df: DataFrame to write
+            trade_date: Trade date (partition key)
+            overwrite: Whether to overwrite existing data
+            
+        Returns:
+            Path to written file
+        """
+        return self._write_equity_layer("raw", df, trade_date, overwrite)
+    
+    def write_equity_processed(
+        self,
+        df: pd.DataFrame,
+        trade_date: datetime,
+        overwrite: bool = True
+    ) -> str:
+        """Write equity data to processed layer."""
+        return self._write_equity_layer("processed", df, trade_date, overwrite)
+    
+    def _write_equity_layer(
+        self,
+        layer: str,
+        df: pd.DataFrame,
+        trade_date: datetime,
+        overwrite: bool = True,
+        filename: str = "data.parquet"
+    ) -> str:
+        """
+        Write equity data to specified layer.
+        
+        Partition scheme: equity/layer/date=YYYY-MM-DD/data.parquet
+        """
+        if df.empty:
+            logger.warning(f"Empty DataFrame, skipping write to equity/{layer}")
+            return ""
+        
+        # Build partition path
+        date_str = trade_date.strftime("%Y-%m-%d")
+        partition_path = self.base_path / "equity" / layer / f"date={date_str}"
+        
+        # Create directory if needed
+        partition_path.mkdir(parents=True, exist_ok=True)
+        
+        # Full file path
+        file_path = partition_path / filename
+        
+        # Check if file exists
+        if file_path.exists() and not overwrite:
+            logger.warning(f"File exists and overwrite=False: {file_path}")
+            return str(file_path)
+        
+        # Write parquet
+        table = pa.Table.from_pandas(df)
+        pq.write_table(
+            table,
+            file_path,
+            compression="snappy",
+            use_dictionary=True,
+            write_statistics=True
+        )
+        
+        logger.info(f"Wrote {len(df)} equity rows to {file_path}")
+        return str(file_path)
+    
     def write_analytics(
         self,
         df: pd.DataFrame,
