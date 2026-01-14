@@ -16,21 +16,16 @@ Production-grade ETL pipeline for ingesting market data using **Apache Airflow (
 
 ## 🏗️ Architecture
 
-```
-Zerodha Kite API
-        ↓
-    [Extract]     → Raw OHLCV from API
-        ↓
-   [Transform]    → Clean, validate, enrich
-        ↓
-  [Load Raw]      → data/lake/{fno|equity}/raw/
-        ↓
-   [Process]      → data/lake/{fno|equity}/processed/
-        ↓
-  [Upload S3]     → s3://bucket/nifty500/date=YYYY-MM-DD/
-        ↓
-[Quality Check]   → Validate data integrity
-```
+![Architecture Diagram](docs/architecture.png)
+
+### Data Flow
+
+| Stage | F&O Pipeline | Nifty 500 Pipeline |
+|-------|--------------|-------------------|
+| **Extract** | 1-min OHLCV + OI | 5-min OHLCV |
+| **Instruments** | BANKNIFTY, NIFTY options/futures | 500 NSE equities |
+| **Transform** | Add DTE, strike, expiry | Validate OHLC |
+| **Storage** | `fno/date=YYYY-MM-DD/` | `equity/date=YYYY-MM-DD/` |
 
 ## 📁 Project Structure
 
