@@ -11,13 +11,11 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Login to GitHub Container Registry
+    - name: Login to GHCR
       run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-    - name: Build Docker image
-      run: |
-        docker build -t ghcr.io/${{ github.repository }}/stock-etl-airflow:latest .
+    - name: Build image
+      run: docker build -t ghcr.io/kamal2131/stock-etl-airflow/stock-etl-airflow:latest .
 
-    - name: Push Docker image
-      run: |
-        docker push ghcr.io/${{ github.repository }}/stock-etl-airflow:latest
+    - name: Push image
+      run: docker push ghcr.io/kamal2131/stock-etl-airflow/stock-etl-airflow:latest
